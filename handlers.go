@@ -32,7 +32,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	msg := NewMessage()
 	msg.From("admin@example.com")
-	msg.To("bellamy.john.d@gmail.com", "john.devon.bellamy@gmail.com")
+	msg.To("bellamy.john.d@gmail.com")
 	msg.Subject(messageRequest.Subject)
 	msg.Body(messageRequest.Body)
 	msg.SendSmtp(&SMTPConfig{
