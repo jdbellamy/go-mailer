@@ -1,10 +1,18 @@
 {
-    "memo": "2c8efc0deeb439dc6f18b3c749e0c1173881aeaa715d0369da09513fed0cedd9",
+    "memo": "da0ee5e2d7cd2611b2e2b7861ec32dc8a1ae15398f2ef891c84f2948bc88e470",
     "projects": [
         {
             "name": "github.com/fatih/color",
             "branch": "master",
             "revision": "42c364ba490082e4815b5222728711b3440603eb",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/google/jsonapi",
+            "branch": "master",
+            "revision": "3ea9ec4904f69a88865ae3826c474e832e94c493",
             "packages": [
                 "."
             ]

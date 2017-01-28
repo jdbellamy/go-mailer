@@ -7,7 +7,28 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-const executable = "/usr/sbin/postfix"
+const sendmail_executable = "/usr/sbin/postfix"
+
+type Email struct {
+	ID		   int      `jsonapi:"primary,emails"`
+	Subject    string   `jsonapi:"attr,subject"`
+	Body	   string   `jsonapi:"attr,body"`
+	Sender     string   `jsonapi:"attr,sender"`
+	Recipients []string `jsonapi:"attr,addrs"`
+}
+
+type EmailSender interface {
+	Send(msg *EmailMsg) error
+}
+
+type SmtpClient struct {
+	Server   string
+	Port     int
+	Username string
+	Password string
+}
+
+type SendmailClient struct {}
 
 type EmailMsg struct {
 	gomail.Message
@@ -36,53 +57,42 @@ func (msg *EmailMsg) Body(body string) {
 	msg.SetBody(TextPlain, body)
 }
 
-type SMTPConfig struct {
-	Server   string
-	Port     int
-	Username string
-	Password string
-}
-
-func (msg *EmailMsg) SendSmtp(conf *SMTPConfig) error {
-	d := gomail.NewDialer(conf.Server, conf.Port, conf.Username, conf.Password)
+func (cl *SmtpClient) Send(m *Email) error {
+	msg := NewMessage()
+	msg.From(m.Sender)
+	msg.To(m.Recipients ...)
+	msg.Subject(m.Subject)
+	msg.Body(m.Body)
+	d := gomail.NewDialer(cl.Server, cl.Port, cl.Username, cl.Password)
 	if err := d.DialAndSend(&msg.Message); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (msg *EmailMsg) SendMail() error {
+func (cl *SendmailClient) send(m *EmailMsg) error {
 	s := gomail.SendFunc(func(from string, to []string, m io.WriterTo) error {
-		return sendmail(m)
+		return func(m io.WriterTo) error {
+			cmd := exec.Command(sendmail_executable, "-t")
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if pw, err := cmd.StdinPipe(); err == nil {
+				defer pw.Close()
+				err = cmd.Start()
+				if err != nil {
+					return err
+				}
+				_, err = m.WriteTo(pw)
+				if err != nil {
+					return err
+				}
+				err = cmd.Wait()
+				if err != nil {
+					return err
+				}
+			}
+			return nil
+		}(m)
 	})
-	return gomail.Send(s, &msg.Message)
-}
-
-func sendmail(m io.WriterTo) (err error) {
-	cmd := exec.Command(executable, "-t")
-
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	pw, err := cmd.StdinPipe()
-	if err != nil {
-		return
-	}
-	err = cmd.Start()
-	if err != nil {
-		return
-	}
-	_, err = m.WriteTo(pw)
-	if err != nil {
-		return
-	}
-	err = pw.Close()
-	if err != nil {
-		return
-	}
-	err = cmd.Wait()
-	if err != nil {
-		return
-	}
-	return nil
+	return gomail.Send(s, &m.Message)
 }

@@ -16,7 +16,8 @@ type Routes []Route
 
 var routes = Routes{
 	Route{"Index", "GET", "/", Index},
-	Route{"Send", "POST", "/msgs", SendMessage},
+	Route{"ShowMsgs", "GET", "/msgs", ListMessages},
+	Route{"SendMsg", "POST", "/msgs", SendMessage},
 }
 
 func NewRouter() *mux.Router {

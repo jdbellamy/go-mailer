@@ -3,6 +3,9 @@
         "github.com/fatih/color": {
             "branch": "master"
         },
+        "github.com/google/jsonapi": {
+            "branch": "master"
+        },
         "github.com/gorilla/mux": {
             "branch": "master"
         },
