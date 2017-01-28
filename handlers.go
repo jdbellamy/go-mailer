@@ -4,30 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
 	"github.com/uber-go/zap"
-
-	"time"
 )
 
-
-
 func Index(w http.ResponseWriter, r *http.Request) {
-	logger := zap.New(
-		zap.NewJSONEncoder(zap.NoTime()), // drop timestamps in tests
-	)
-
-	logger.Warn("Log without structured data...")
-	logger.Warn(
-		"Or use strongly-typed wrappers to add structured context.",
-		zap.String("library", "zap"),
-		zap.Duration("latency", time.Nanosecond),
-	)
-
-	logger.Info("Failed to fetch URL.",
-		zap.String("url", r.URL.String()),
-	)
-	fmt.Fprintln(w, "/")
+	fmt.Fprintln(w, "Go-mailer Service")
 }
 
 func SendMessage(w http.ResponseWriter, r *http.Request) {
@@ -38,11 +19,15 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	var messageRequest MessageRequest
 	if r.Body == nil {
 		http.Error(w, "Please send a request body", 400)
+		logger.Error("Missing request body",  zap.Int("status", 400))
 		return
 	}
 	err := json.NewDecoder(r.Body).Decode(&messageRequest)
 	if err != nil {
-		http.Error(w, err.Error(), 400)
+		http.Error(w, err.Error(), 500)
+		logger.Error("Unexpected error while decoding request body",
+			zap.Error(err),
+			zap.Int("status", 500))
 		return
 	}
 	msg := NewMessage()

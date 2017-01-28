@@ -37,10 +37,10 @@ func (msg *EmailMsg) Body(body string) {
 }
 
 type SMTPConfig struct {
-	Server   string  //"sendmail"
-	Port     int     // 25
-	Username string  // "user"
-	Password string  // "123456"
+	Server   string
+	Port     int
+	Username string
+	Password string
 }
 
 func (msg *EmailMsg) SendSmtp(conf *SMTPConfig) error {

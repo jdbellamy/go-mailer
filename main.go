@@ -9,7 +9,7 @@ import (
 func main() {
 	port := ":8080"
 	router := NewRouter()
-	log.Panicf("Listening on port %s", color.BlueString(port))
+	log.Printf("Listening on port %s\n", color.BlueString(port))
 	log.Fatal(http.ListenAndServe(port, router))
 }
 
