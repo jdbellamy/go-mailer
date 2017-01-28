@@ -2,6 +2,8 @@
 
 Playing around with sending emails
 
--[x] smtp server sample
--[ ] smtp relay sample
--[x] sendmail sample
+- smtp server sample
+- sendmail sample
+
+Todos:
+- smtp relay sample
