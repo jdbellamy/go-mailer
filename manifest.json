@@ -1,0 +1,19 @@
+{
+    "dependencies": {
+        "github.com/fatih/color": {
+            "branch": "master"
+        },
+        "github.com/gorilla/mux": {
+            "branch": "master"
+        },
+        "github.com/pkg/errors": {
+            "version": ">=0.8.0, <1.0.0"
+        },
+        "github.com/uber-go/zap": {
+            "branch": "master"
+        },
+        "gopkg.in/gomail.v2": {
+            "branch": "v2"
+        }
+    }
+}

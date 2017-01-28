@@ -1,0 +1,85 @@
+{
+    "memo": "2c8efc0deeb439dc6f18b3c749e0c1173881aeaa715d0369da09513fed0cedd9",
+    "projects": [
+        {
+            "name": "github.com/fatih/color",
+            "branch": "master",
+            "revision": "42c364ba490082e4815b5222728711b3440603eb",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/gorilla/context",
+            "version": "v1.1",
+            "revision": "1ea25387ff6f684839d82767c1733ff4d4d15d0a",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/gorilla/mux",
+            "version": "v1.3.0",
+            "revision": "392c28fe23e1c45ddba891b0320b3b5df220beea",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/mattn/go-colorable",
+            "version": "v0.0.6",
+            "revision": "ed8eb9e318d7a84ce5915b495b7d35e0cfe7b5a8",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/mattn/go-isatty",
+            "version": "v0.0.1",
+            "revision": "3a115632dcd687f9c8cd01679c83a06a0e21c1f3",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/uber-go/atomic",
+            "version": "v1.0.0",
+            "revision": "0c9e689d64f004564b79d9a663634756df322902",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/uber-go/zap",
+            "branch": "master",
+            "revision": "a5783ee4b216a927da8f839c45cfbf9d694e1467",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "golang.org/x/sys",
+            "branch": "master",
+            "revision": "d75a52659825e75fff6158388dddc6a5b04f9ba5",
+            "packages": [
+                "unix"
+            ]
+        },
+        {
+            "name": "gopkg.in/alexcesaro/quotedprintable.v3",
+            "branch": "v3",
+            "revision": "2caba252f4dc53eaf6b553000885530023f54623",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "gopkg.in/gomail.v2",
+            "branch": "v2",
+            "revision": "81ebce5c23dfd25c6c67194b37d3dd3f338c98b1",
+            "packages": [
+                "."
+            ]
+        }
+    ]
+}
