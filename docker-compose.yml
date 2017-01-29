@@ -10,6 +10,8 @@ services:
     - smtp
   smtp:
     image: namshi/smtp
+    expose:
+      - 25
     ports:
     - "25:25"
 volumes:

@@ -1,13 +1,15 @@
-package main
+package rest
 
 import (
 	"fmt"
 	"net/http"
 	"github.com/uber-go/zap"
 	"github.com/google/jsonapi"
+	"github.com/jdbellamy/go-mailer/mail"
+	. "github.com/jdbellamy/go-mailer/middleware"
 )
 
-var emails = []*Email{}
+var emails = []*mail.Email{}
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Go-mailer Service")
@@ -24,18 +26,18 @@ func ListMessages(w http.ResponseWriter, r *http.Request) {
 
 func SendMessage(w http.ResponseWriter, r *http.Request) {
 	jsonapiRuntime := jsonapi.NewRuntime().Instrument("msgs.create")
-	var m = new(Email)
+	var m = new(mail.Email)
 	if err := jsonapiRuntime.UnmarshalPayload(r.Body, m); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		logger.Error("Unexpected error while decoding request body",
+		Z.Error("Unexpected error while decoding request body",
 			zap.Error(err),
 			zap.Int("status", http.StatusInternalServerError))
 		return
 	}
-	var mailer = SmtpClient{Server: "smtp", Port: 25}
+	var mailer = mail.SmtpClient{Server: "smtp", Port: 25}
 	if err := mailer.Send(m); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		logger.Error("Unexpected error while sending email",
+		Z.Error("Unexpected error while sending email",
 			zap.Error(err),
 			zap.Int("status", http.StatusInternalServerError))
 		return

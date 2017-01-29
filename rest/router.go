@@ -1,8 +1,9 @@
-package main
+package rest
 
 import (
 	"net/http"
 	"github.com/gorilla/mux"
+	. "github.com/jdbellamy/go-mailer/middleware"
 )
 
 type Route struct {
