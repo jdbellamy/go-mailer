@@ -34,7 +34,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 			zap.Int("status", http.StatusInternalServerError))
 		return
 	}
-	var mailer = mail.SmtpClient{Server: "smtp", Port: 25}
+	var mailer = mail.SmtpClient{Server: "localhost", Port: 25}
 	if err := mailer.Send(m); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		Z.Error("Unexpected error while sending email",
