@@ -8,21 +8,21 @@ import (
 
 type WaitAnimation struct {
 	Spinner *spin.Spinner
+	stop	bool
 }
 
-func NewSpinner() *WaitAnimation {
-	return &WaitAnimation{
-		Spinner: spin.New(),
-	}
+func Spinner() *WaitAnimation {
+	s := &WaitAnimation{}
+	s.Spinner = spin.New()
+	go func(s *WaitAnimation) {
+		for s.stop == false {
+			fmt.Printf("\r  \033[36m\033[m %s ", s.Spinner.Next())
+			time.Sleep(100 * time.Millisecond)
+		}
+	}(s)
+	return s
 }
 
-func (s *WaitAnimation) Spin() {
-	for {
-		fmt.Printf("\r  \033[36msending\033[m %s ", s.Spinner.Next())
-		time.Sleep(100 * time.Millisecond)
-	}
-}
-
-func (s *WaitAnimation) Stop() {
-	s.Spinner.Reset()
+func (a *WaitAnimation) Stop() {
+	a.stop = true
 }

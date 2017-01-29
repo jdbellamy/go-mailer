@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	. "github.com/jdbellamy/go-mailer/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Route struct {
@@ -19,6 +20,7 @@ var routes = Routes{
 	Route{"Index", "GET", "/", Index},
 	Route{"ShowMsgs", "GET", "/msgs", ListMessages},
 	Route{"SendMsg", "POST", "/msgs", SendMessage},
+	Route{"Metrics", "GET", "/metrics", promhttp.Handler().ServeHTTP},
 }
 
 func NewRouter() *mux.Router {

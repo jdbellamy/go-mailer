@@ -3,9 +3,11 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/jdbellamy/go-mailer/mail"
-	. "github.com/jdbellamy/go-mailer/middleware"
-	"github.com/uber-go/zap"
+	"github.com/armon/go-metrics"
+	"fmt"
+	metrics_p "github.com/armon/go-metrics/prometheus"
 	"time"
+	"github.com/fatih/color"
 )
 
 // mailCmd represents the mail command
@@ -19,6 +21,10 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		defer metrics.MeasureSince([]string{"mailCmd"}, time.Now())
+		sink, _ := metrics_p.NewPrometheusSink()
+		metrics.NewGlobal(metrics.DefaultConfig("go-mailer"), sink)
+
 		var mailer = mail.SmtpClient{
 			Server: "localhost",
 			Port: 25,
@@ -30,26 +36,21 @@ to quickly create a Cobra application.`,
 			Body: func() string { r, _ := lf.GetString("body"); return r}(),
 			Subject: func() string { r, _ := lf.GetString("subject"); return r}(),
 		}
-
-		spinner := NewSpinner()
-		time.Sleep(2 * time.Second)
-
+		spinner := Spinner()
 		if err := mailer.Send(&m); err != nil {
-			spinner.Stop()
-			Z.Error("Unexpected error while sending message",
-				zap.Error(err),
-				zap.Object("email", m),
-				zap.Object("mailer", mailer))
+			metrics.AddSample([]string{"error", err.Error()}, 1.0)
+			fmt.Printf("%s: %s\n",
+				color.RedString("ERROR"),
+				color.WhiteString(err.Error()))
 		} else {
-			spinner.Stop()
-			Z.Info("Email was successfully sent",
-				zap.Object("message", m),
-				zap.Object("mailer", mailer))
+			fmt.Printf("%s: Message sent {%s->%s}\n",
+				color.GreenString("SUCCESS"),
+				color.WhiteString(m.Sender),
+				color.WhiteString(fmt.Sprintf("%v", m.Recipients)))
 		}
+		spinner.Stop()
 	},
 }
-
-
 
 func init() {
 	RootCmd.AddCommand(mailCmd)
