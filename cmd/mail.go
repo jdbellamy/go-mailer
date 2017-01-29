@@ -27,7 +27,7 @@ to quickly create a Cobra application.`,
 
 		var mailer = mail.SmtpClient{
 			Server: "localhost",
-			Port: 25,
+			Port: 26,
 		}
 		lf := cmd.LocalFlags()
 		m := mail.Email{
