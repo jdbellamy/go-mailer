@@ -24,18 +24,15 @@ to quickly create a Cobra application.`,
 		defer metrics.MeasureSince([]string{"mailCmd"}, time.Now())
 		sink, _ := metrics_p.NewPrometheusSink()
 		metrics.NewGlobal(metrics.DefaultConfig("go-mailer"), sink)
-
 		var mailer = mail.SmtpClient{
 			Server: "localhost",
 			Port: 26,
 		}
-		lf := cmd.LocalFlags()
-		m := mail.Email{
-			Sender: func() string { r, _ := lf.GetString("from"); return r}(),
-			Recipients: func() []string { r, _ := lf.GetStringArray("to"); return r}(),
-			Body: func() string { r, _ := lf.GetString("body"); return r}(),
-			Subject: func() string { r, _ := lf.GetString("subject"); return r}(),
-		}
+		m := mail.Email{}
+		m.Sender, _ = cmd.LocalFlags().GetString("from")
+		m.Recipients, _ = cmd.LocalFlags().GetStringArray("to")
+		m.Body, _ = cmd.LocalFlags().GetString("body")
+		m.Subject, _ = cmd.LocalFlags().GetString("subject")
 		spinner := Spinner()
 		if err := mailer.Send(&m); err != nil {
 			metrics.AddSample([]string{"error", err.Error()}, 1.0)
@@ -43,6 +40,7 @@ to quickly create a Cobra application.`,
 				color.RedString("ERROR"),
 				color.WhiteString(err.Error()))
 		} else {
+			metrics.AddSample([]string{"mail-sent", fmt.Sprintf("%v", m)}, 1)
 			fmt.Printf("%s: Message sent {%s->%s}\n",
 				color.GreenString("SUCCESS"),
 				color.WhiteString(m.Sender),
